@@ -1,0 +1,60 @@
+---
+- name: Ensure apt keyrings directory exists
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Check if mise GPG key exists
+  ansible.builtin.stat:
+    path: /etc/apt/keyrings/mise-archive-keyring.gpg
+  register: mise_gpg_key
+
+- name: Download and install mise GPG key
+  become: true
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://mise.jdx.dev/gpg-key.pub | gpg --dearmor -o /etc/apt/keyrings/mise-archive-keyring.gpg
+  when: not mise_gpg_key.stat.exists
+
+- name: Set mise GPG key permissions
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/keyrings/mise-archive-keyring.gpg
+    mode: "0644"
+  when: not mise_gpg_key.stat.exists
+
+- name: Add mise apt repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch={{ ansible_facts['architecture'] | regex_replace('x86_64', 'amd64') | regex_replace('aarch64', 'arm64') }}] https://mise.jdx.dev/deb stable main"
+    filename: mise
+    state: present
+
+- name: Install mise
+  become: true
+  ansible.builtin.apt:
+    name: mise
+    state: present
+    update_cache: true
+
+- name: Activate mise in .zshrc
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_facts['env']['HOME'] }}/.zshrc"
+    line: 'eval "$(mise activate zsh)"'
+    create: true
+    mode: "0644"
+
+- name: Install runtime tools via mise
+  ansible.builtin.command:
+    cmd: "mise use --global {{ item }}"
+  loop:
+    - node@lts
+    - bun@latest
+    - python@latest
+    - uv@latest
+    - pipx@latest
+    - rust@latest
+    - go@latest
+  register: mise_install
+  changed_when: "'installed' in mise_install.stderr or 'installed' in mise_install.stdout"

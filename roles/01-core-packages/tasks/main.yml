@@ -1,0 +1,15 @@
+---
+- name: Update apt
+  import_tasks: update.yml
+
+- name: Install core packages
+  import_tasks: core.yml
+
+- name: Install mise
+  import_tasks: mise.yml
+
+- name: Install docker
+  import_tasks: docker.yml
+
+- name: Install AI agents
+  import_tasks: agents.yml

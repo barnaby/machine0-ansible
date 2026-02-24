@@ -1,0 +1,35 @@
+---
+- name: Install build tools
+  become: true
+  ansible.builtin.apt:
+    name:
+      - build-essential
+      - cmake
+      - pkg-config
+    state: present
+
+- name: Install ansible
+  become: true
+  ansible.builtin.apt:
+    name: ansible
+    state: present
+
+- name: Install shell and CLI tools
+  become: true
+  ansible.builtin.apt:
+    name:
+      - git
+      - vim
+      - curl
+      - wget
+      - unzip
+      - jq
+      - p7zip-full
+      - net-tools
+      - htop
+      - btop
+      - fzf
+      - ripgrep
+      - postgresql-client
+      - cups
+    state: present
