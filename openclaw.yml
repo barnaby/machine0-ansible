@@ -1,0 +1,21 @@
+---
+# =============================================================================
+# Deploy Playbook
+# Run this as the regular user to install packages and configure the system
+# Usage: ansible-playbook -i "IP," -u barnaby playbook.yml
+# =============================================================================
+
+- hosts: all
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    install_openclaw: true
+  roles:
+    - role: 01-core-packages
+    - role: 02-shell
+
+  post_tasks:
+    - name: Reboot the machine
+      become: true
+      ansible.builtin.reboot:
+        reboot_timeout: 300

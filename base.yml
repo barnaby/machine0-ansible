@@ -9,7 +9,7 @@
   gather_facts: true
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    install_openclaw: false
+    install_openclaw: true
   roles:
     - role: 01-core-packages
     - role: 02-shell
