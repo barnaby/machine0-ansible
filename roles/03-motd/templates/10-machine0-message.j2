@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+{% raw %}
+CYAN='\033[36m'
+BOLD='\033[1m'
+WHITE='\033[97m'
+DIM='\033[2m'
+RESET='\033[0m'
+
+MESSAGE=$(cat << 'MSGEOF'
+{% endraw %}
+{{ motd_message_body | trim }}
+{% raw %}
+MSGEOF
+)
+
+mapfile -t lines <<< "$MESSAGE"
+
+max_len=0
+for line in "${lines[@]}"; do
+  len=${#line}
+  (( len > max_len )) && max_len=$len
+done
+
+width=$((max_len + 4))
+
+echo ""
+printf "${DIM}${CYAN}  ╭"
+printf '─%.0s' $(seq 1 $width)
+printf "╮${RESET}\n"
+
+printf "${DIM}${CYAN}  │${RESET}%${width}s${DIM}${CYAN}│${RESET}\n" ""
+
+for line in "${lines[@]}"; do
+  if [[ "$line" == "$ "* ]]; then
+    printf "${DIM}${CYAN}  │${RESET}  ${BOLD}${WHITE}%-$((width - 2))s${RESET}${DIM}${CYAN}│${RESET}\n" "$line"
+  else
+    printf "${DIM}${CYAN}  │${RESET}  %-$((width - 2))s${DIM}${CYAN}│${RESET}\n" "$line"
+  fi
+done
+
+printf "${DIM}${CYAN}  │${RESET}%${width}s${DIM}${CYAN}│${RESET}\n" ""
+printf "${DIM}${CYAN}  ╰"
+printf '─%.0s' $(seq 1 $width)
+printf "╯${RESET}\n"
+echo ""
+{% endraw %}

@@ -13,6 +13,7 @@
   roles:
     - role: 01-core-packages
     - role: 02-shell
+    - role: 03-motd
 
   post_tasks:
     - name: Reboot the machine

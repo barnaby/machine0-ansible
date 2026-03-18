@@ -1,0 +1,28 @@
+---
+- name: Remove default Ubuntu MOTD scripts
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/update-motd.d/00-header
+    - /etc/update-motd.d/10-help-text
+    - /etc/update-motd.d/50-motd-news
+    - /etc/update-motd.d/50-landscape-sysinfo
+    - /etc/update-motd.d/90-updates-available
+    - /etc/update-motd.d/91-contract-ua-esm-status
+    - /etc/update-motd.d/97-overlayroot
+
+- name: Remove static /etc/motd
+  become: true
+  ansible.builtin.file:
+    path: /etc/motd
+    state: absent
+
+- name: Configure system_info MOTD
+  import_tasks: system_info.yml
+  when: motd_type | default('system_info') == 'system_info'
+
+- name: Configure message MOTD
+  import_tasks: message.yml
+  when: motd_type | default('system_info') == 'message'

@@ -1,0 +1,9 @@
+---
+- name: Deploy message MOTD script
+  become: true
+  ansible.builtin.template:
+    src: 10-machine0-message.j2
+    dest: /etc/update-motd.d/00-machine0-header
+    owner: root
+    group: root
+    mode: "0755"

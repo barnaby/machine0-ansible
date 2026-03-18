@@ -13,6 +13,15 @@
   roles:
     - role: 01-core-packages
     - role: 02-shell
+    - role: 03-motd
+      vars:
+        motd_type: message
+        motd_message_body: |
+          Welcome to your new OpenClaw VM! Run this command to start the onboarding process:
+
+          $ openclaw onboard --install-daemon
+
+          Note: it'll take ~60s to startup the first time, don't kill the process.
 
   post_tasks:
     - name: Reboot the machine

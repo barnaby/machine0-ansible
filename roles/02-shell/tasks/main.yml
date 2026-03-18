@@ -4,6 +4,3 @@
 
 - name: Setup screen
   import_tasks: screen.yml
-
-- name: Configure motd
-  import_tasks: motd.yml
