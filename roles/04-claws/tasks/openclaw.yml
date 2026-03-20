@@ -1,0 +1,9 @@
+---
+- name: Install OpenClaw globally via npm
+  ansible.builtin.shell: |
+    eval "$(mise activate bash)"
+    npm install -g openclaw@latest
+  args:
+    executable: /bin/bash
+  register: openclaw_install
+  changed_when: "'added' in openclaw_install.stdout or 'up to date' not in openclaw_install.stderr"

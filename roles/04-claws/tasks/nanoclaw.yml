@@ -1,0 +1,7 @@
+---
+- name: Clone NanoClaw repository
+  ansible.builtin.git:
+    repo: "https://github.com/qwibitai/nanoclaw.git"
+    dest: "{{ ansible_facts['env']['HOME'] }}/nanoclaw"
+    version: main
+    update: false

@@ -1,0 +1,23 @@
+---
+- name: Install NemoClaw globally via bun from GitHub
+  ansible.builtin.shell: |
+    eval "$(mise activate bash)"
+    bun install -g nemoclaw@github:NVIDIA/NemoClaw
+  args:
+    executable: /bin/bash
+  register: nemoclaw_install
+  changed_when: nemoclaw_install.rc == 0
+
+- name: Ensure ~/.bun/bin is on PATH in .zshrc
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_facts['env']['HOME'] }}/.zshrc"
+    line: 'export PATH="$HOME/.bun/bin:$PATH"'
+    create: true
+    mode: "0644"
+
+- name: Ensure ~/.bun/bin is on PATH in .profile
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_facts['env']['HOME'] }}/.profile"
+    line: 'export PATH="$HOME/.bun/bin:$PATH"'
+    create: true
+    mode: "0644"

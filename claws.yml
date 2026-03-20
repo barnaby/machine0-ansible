@@ -1,8 +1,8 @@
 ---
 # =============================================================================
-# OpenClaw Playbook
-# Run this as the regular user to install packages and configure the system
-# Usage: ansible-playbook -i "IP," -u barnaby playbook.yml
+# Claws Playbook
+# Installs all major AI agent claw frameworks
+# Usage: ansible-playbook -i "IP," -u barnaby claws.yml
 # =============================================================================
 
 - hosts: all
@@ -15,15 +15,24 @@
     - role: 04-claws
       vars:
         open_claw: true
+        nemo_claw: true
+        nano_claw: true
+        meta_claw: true
+        zero_claw: true
     - role: 03-motd
       vars:
         motd_type: message
         motd_message_body: |
-          Welcome to your new OpenClaw VM! Run this command to start the onboarding process:
+          Welcome to your Claws VM! The following AI agent frameworks are installed.
+          Run the onboarding command for each to get started:
 
           $ openclaw onboard --install-daemon
+          $ nemoclaw my-assistant connect
+          $ cd ~/nanoclaw && claude    (then run /setup)
+          $ metaclaw setup
+          $ zeroclaw onboard
 
-          Note: it'll take ~60s to startup the first time, don't kill the process.
+          Note: first-time startup may take 30-60s for each agent.
 
   post_tasks:
     - name: Reboot the machine
