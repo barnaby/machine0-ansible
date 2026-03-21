@@ -14,12 +14,22 @@ This playbook installs dev tools, runtimes, Docker, AI coding agents and a moder
 | `claws.yml` | Base + all 5 claw agent frameworks (OpenClaw, NemoClaw, NanoClaw, MetaClaw, ZeroClaw) |
 | `webserver.yml` | Base + web server setup |
 
+## Recommended VM Sizes
+
+| Playbook | Minimum Size | Why |
+|---|---|---|
+| `base.yml` | `small` (1 GB) | Lightweight dev tools and runtimes |
+| `openclaw.yml` | `small` (1 GB) | Single npm package |
+| `claws.yml` | `xl` (8 GB) | NemoClaw's dependency tree needs the RAM |
+| `webserver.yml` | `small` (1 GB) | Lightweight web server |
+
 ## Provisioning
 
 Using the machine0 CLI:
 
 ```bash
-$ machine0 provision my-vm base.yml
+$ machine0 new my-vm --size xl
+$ machine0 provision my-vm claws.yml
 ```
 
 Or directly with Ansible:
