@@ -1,0 +1,20 @@
+---
+- name: Install OpenClaw
+  import_tasks: openclaw.yml
+  when: open_claw
+
+- name: Install NemoClaw
+  import_tasks: nemoclaw.yml
+  when: nemo_claw
+
+- name: Install NanoClaw
+  import_tasks: nanoclaw.yml
+  when: nano_claw
+
+- name: Install MetaClaw
+  import_tasks: metaclaw.yml
+  when: meta_claw
+
+- name: Install ZeroClaw
+  import_tasks: zeroclaw.yml
+  when: zero_claw

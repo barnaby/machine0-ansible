@@ -1,0 +1,9 @@
+---
+- name: Install MetaClaw via pip from GitHub
+  ansible.builtin.shell: |
+    eval "$(mise activate bash)"
+    pip install "metaclaw @ git+https://github.com/aiming-lab/MetaClaw.git"
+  args:
+    executable: /bin/bash
+  register: metaclaw_install
+  changed_when: "'Successfully installed' in metaclaw_install.stdout"

@@ -1,0 +1,41 @@
+---
+- name: Clone NemoClaw repository
+  ansible.builtin.git:
+    repo: "https://github.com/NVIDIA/NemoClaw.git"
+    dest: "{{ ansible_facts['env']['HOME'] }}/nemoclaw"
+    version: main
+    update: false
+
+- name: Install NemoClaw dependencies via bun
+  ansible.builtin.shell: |
+    eval "$(mise activate bash)"
+    cd ~/nemoclaw
+    bun install
+  args:
+    executable: /bin/bash
+  register: nemoclaw_install
+  changed_when: "'installed' in nemoclaw_install.stdout"
+
+- name: Link NemoClaw globally via bun
+  ansible.builtin.shell: |
+    eval "$(mise activate bash)"
+    cd ~/nemoclaw
+    bun link
+  args:
+    executable: /bin/bash
+  register: nemoclaw_link
+  changed_when: nemoclaw_link.rc == 0
+
+- name: Ensure ~/.bun/bin is on PATH in .zshrc
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_facts['env']['HOME'] }}/.zshrc"
+    line: 'export PATH="$HOME/.bun/bin:$PATH"'
+    create: true
+    mode: "0644"
+
+- name: Ensure ~/.bun/bin is on PATH in .profile
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_facts['env']['HOME'] }}/.profile"
+    line: 'export PATH="$HOME/.bun/bin:$PATH"'
+    create: true
+    mode: "0644"
