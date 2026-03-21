@@ -3,6 +3,7 @@
 # Claws Playbook
 # Installs all major AI agent claw frameworks
 # Usage: ansible-playbook -i "IP," -u barnaby claws.yml
+# Requires xl (8GB) VM or larger — NemoClaw's dependency tree needs the RAM
 # =============================================================================
 
 - hosts: all
@@ -10,8 +11,8 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
   roles:
-    - role: 01-core-packages
-    - role: 02-shell
+    # - role: 01-core-packages
+    # - role: 02-shell
     - role: 04-claws
       vars:
         open_claw: true
