@@ -4,7 +4,7 @@
 - name: Deploy SSH hardening config
   become: true
   ansible.builtin.copy:
-    dest: /etc/ssh/sshd_config.d/99-hardening.conf
+    dest: /etc/ssh/sshd_config.d/01-hardening.conf
     content: |
       PasswordAuthentication no
       KbdInteractiveAuthentication no
