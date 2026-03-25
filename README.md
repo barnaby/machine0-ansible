@@ -64,7 +64,7 @@ This runs `nix.yml` (bootstrap: nix daemon, Docker, SSH, MOTD) then activates th
 
 ## What's Installed
 
-> The table below describes `base.yml`. The nix path (`nix/deploy.sh`) installs the same packages via [nixpkgs](https://search.nixos.org/packages) instead of mise/apt.
+> The table below describes `base.yml`. The nix path (`nix/deploy.sh`) installs an equivalent set of packages via [nixpkgs](https://search.nixos.org/packages) instead of mise/apt. Minor differences: `fastfetch` is still installed by the `03-motd` Ansible role; `chafa`, `powerline`, and `inetutils` are added by the nix flake.
 
 | Category | Packages |
 |---|---|
