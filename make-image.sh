@@ -13,7 +13,7 @@ suffix="${3:-$(date +%y%m%d-%H%M)}"
 [[ ! -f "$playbook" ]] && echo "Error: playbook '$playbook' not found" && exit 1
 
 # --- Derive names -----------------------------------------------------
-name="${playbook%.yml}"
+name=$(basename -- "${playbook%.yml}")
 name="${name%.yaml}"
 image="${name}-${suffix}"
 vm="$image"                    # VM and image share the same name
@@ -21,7 +21,7 @@ vm="$image"                    # VM and image share the same name
 # --- Cleanup trap -----------------------------------------------------
 vm_created=false
 cleanup() {
-  if $vm_created; then
+  if [[ "$vm_created" == "true" ]]; then
     echo "Cleaning up VM '$vm'..."
     machine0 stop "$vm" 2>/dev/null || true
     machine0 rm "$vm" -y 2>/dev/null || true
