@@ -86,7 +86,7 @@ alias reload='source ~/.zshrc'
 alias myip='curl http://jsonip.com/ | cut -d\" -f4'
 alias key='cat ~/.ssh/id_rsa.pub'
 alias webserver='python3 -m http.server'
-alias docker-ps='docker ps -a --format "table {{.ID}}\t{{.Status}}\t{{.Names}}"'
+alias docker-ps='sudo docker ps -a --format "table {{.ID}}\t{{.Status}}\t{{.Names}}"'
 alias gen-passwd='openssl rand -base64 12 | tr -d "/+=" | head -c 16 && echo'
 
 #

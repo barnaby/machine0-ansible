@@ -52,13 +52,3 @@
       - docker-compose-plugin
     state: present
     update_cache: true
-
-# NOTE: Docker group membership grants effective root access via container escape.
-# This is an accepted trade-off for developer VMs. For production workloads,
-# consider Docker rootless mode.
-- name: Add user to docker group
-  become: true
-  ansible.builtin.user:
-    name: "{{ ansible_user }}"
-    groups: docker
-    append: true
