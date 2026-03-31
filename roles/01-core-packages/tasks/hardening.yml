@@ -14,7 +14,9 @@
       enabled = true
       port = ssh
       maxretry = 5
+      findtime = 600
       bantime = 3600
+      backend = systemd
     mode: "0644"
   notify: Restart fail2ban
 
