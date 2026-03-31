@@ -63,3 +63,14 @@
     state: present
     update_cache: true
   when: docker_check.rc != 0
+
+- name: Add user to docker group
+  become: true
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: true
+  when: docker_check.rc != 0
+
+- name: Reset SSH connection to pick up docker group
+  ansible.builtin.meta: reset_connection

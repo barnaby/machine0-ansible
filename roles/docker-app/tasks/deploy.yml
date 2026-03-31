@@ -1,25 +1,21 @@
 ---
 - name: Pull Docker image
-  become: true
   ansible.builtin.command: docker pull {{ docker_app_image }}
   register: docker_pull
   changed_when: "'Downloaded newer image' in docker_pull.stdout or 'Pull complete' in docker_pull.stdout"
 
 - name: Check if container exists
-  become: true
   ansible.builtin.command: docker inspect {{ docker_app_name }}
   register: container_inspect
   changed_when: false
   failed_when: false
 
 - name: Stop existing container
-  become: true
   ansible.builtin.command: docker stop {{ docker_app_name }}
   when: container_inspect.rc == 0
   changed_when: true
 
 - name: Remove existing container
-  become: true
   ansible.builtin.command: docker rm {{ docker_app_name }}
   when: container_inspect.rc == 0
   changed_when: true
@@ -37,12 +33,10 @@
       {{ docker_app_image }}
 
 - name: Start container
-  become: true
   ansible.builtin.command: "{{ _docker_run_cmd }}"
   changed_when: true
 
 - name: Verify container is running
-  become: true
   ansible.builtin.command: docker inspect -f '{{ '{{' }}.State.Running{{ '}}' }}' {{ docker_app_name }}
   register: container_running
   changed_when: false
