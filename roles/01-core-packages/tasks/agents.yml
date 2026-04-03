@@ -2,7 +2,7 @@
 - name: Check if Claude Code is already installed at correct version
   ansible.builtin.shell: |
     eval "$(mise activate bash)"
-    npm list -g @anthropic-ai/claude-code --depth=0 2>/dev/null | grep -q '@anthropic-ai/claude-code@2.1.87'
+    npm list -g @anthropic-ai/claude-code --depth=0 2>/dev/null | grep -q '@anthropic-ai/claude-code@{{ claude_code_version }}'
   args:
     executable: /bin/bash
   register: claude_check
@@ -12,7 +12,7 @@
 - name: Install Claude Code globally via npm
   ansible.builtin.shell: |
     eval "$(mise activate bash)"
-    npm install -g @anthropic-ai/claude-code@2.1.87
+    npm install -g @anthropic-ai/claude-code@{{ claude_code_version }}
   args:
     executable: /bin/bash
   register: claude_install
@@ -22,7 +22,7 @@
 - name: Verify Claude Code installed version
   ansible.builtin.shell: |
     eval "$(mise activate bash)"
-    npm list -g @anthropic-ai/claude-code --depth=0 2>/dev/null | grep -q '@anthropic-ai/claude-code@2.1.87'
+    npm list -g @anthropic-ai/claude-code --depth=0 2>/dev/null | grep -q '@anthropic-ai/claude-code@{{ claude_code_version }}'
   args:
     executable: /bin/bash
   changed_when: false
