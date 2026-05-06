@@ -1,46 +1,116 @@
 #!/usr/bin/env bash
 {% raw %}
-CYAN='\033[36m'
-BOLD='\033[1m'
-WHITE='\033[97m'
-DIM='\033[2m'
-RESET='\033[0m'
+export LC_ALL=C.UTF-8
 
-MESSAGE=$(cat << 'MSGEOF'
+# ── ANSI escape sequences ──────────────────────────────
+DC=$'\033[2;36m'    # dim cyan — borders
+BW=$'\033[1;97m'    # bold white — title
+BC=$'\033[1;36m'    # bold cyan — commands
+B=$'\033[1m'        # bold — dollar sign
+D=$'\033[2m'        # dim — comments
+UL=$'\033[4m'       # underline — links
+R=$'\033[0m'        # reset
+OSC=$'\033]8;;'     # OSC 8 hyperlink opener
+BEL=$'\007'         # bell — OSC terminator
 {% endraw %}
-{{ motd_message_body | trim }}
-{% raw %}
-MSGEOF
+
+TITLE='{{ motd_title }}'
+BODY=(
+{% for line in motd_body %}
+  '{{ line }}'
+{% endfor %}
 )
 
-mapfile -t lines <<< "$MESSAGE"
-
-max_len=0
-for line in "${lines[@]}"; do
-  len=${#line}
-  (( len > max_len )) && max_len=$len
+{% raw %}
+# ── Build all entries ───────────────────────────────────
+# Structure: blank / title / blank / body... / blank
+entries=("")
+entries+=("$TITLE")
+entries+=("")
+for line in "${BODY[@]}"; do
+  entries+=("$line")
 done
+entries+=("")
 
-width=$((max_len + 4))
+# ── Helpers ─────────────────────────────────────────────
+# Visual width — replace wide chars with equivalent-width ASCII
+vis_width() {
+  local s="$1"
+  s="${s//🦞/XX}"  # emoji: 2 columns wide, 1 code point
+  echo "${#s}"
+}
 
-echo ""
-printf "${DIM}${CYAN}  ╭"
-printf '─%.0s' $(seq 1 $width)
-printf "╮${RESET}\n"
-
-printf "${DIM}${CYAN}  │${RESET}%${width}s${DIM}${CYAN}│${RESET}\n" ""
-
-for line in "${lines[@]}"; do
-  if [[ "$line" == "$ "* ]]; then
-    printf "${DIM}${CYAN}  │${RESET}  ${BOLD}${WHITE}%-$((width - 2))s${RESET}${DIM}${CYAN}│${RESET}\n" "$line"
-  else
-    printf "${DIM}${CYAN}  │${RESET}  %-$((width - 2))s${DIM}${CYAN}│${RESET}\n" "$line"
+# Plain text for width calculation — strips display prefixes
+get_plain() {
+  local entry="$1" idx="$2"
+  if [[ -z "$entry" ]]; then echo ""
+  elif (( idx == 1 )); then echo "$entry"
+  elif [[ "$entry" == '-> '* ]]; then echo "${entry:3}"
+  else echo "$entry"
   fi
+}
+
+make_spaces() { printf '%*s' "$1" ""; }
+
+# ── Compute box width ──────────────────────────────────
+PAD=3
+max_vis=0
+for i in "${!entries[@]}"; do
+  p=$(get_plain "${entries[$i]}" "$i")
+  w=$(vis_width "$p")
+  (( w > max_vis )) && max_vis=$w
+done
+WIDTH=$(( max_vis + PAD + PAD ))
+
+# ── Render a single row ────────────────────────────────
+render_row() {
+  local entry="$1" idx="$2"
+  local plain="" styled=""
+
+  if [[ -z "$entry" ]]; then
+    plain=""
+    styled=""
+  elif (( idx == 1 )); then
+    # Title — bold white
+    plain="$entry"
+    styled="${BW}${entry}${R}"
+  elif [[ "$entry" == '$ '* ]]; then
+    # Command — bold $, bold cyan command
+    plain="$entry"
+    styled="${B}\$${R} ${BC}${entry:2}${R}"
+  elif [[ "$entry" == '# '* ]]; then
+    # Comment — dim
+    plain="$entry"
+    styled="${D}#${R} ${D}${entry:2}${R}"
+  elif [[ "$entry" == '-> '* ]]; then
+    # Hyperlink — underlined, OSC 8
+    local text="${entry:3}" url="${entry:3}"
+    [[ "$url" != https://* && "$url" != http://* ]] && url="https://$url"
+    plain="$text"
+    styled="${OSC}${url}${BEL}${UL}${text}${R}${OSC}${BEL}"
+  else
+    # Plain text
+    plain="$entry"
+    styled="$entry"
+  fi
+
+  local vw rp_count
+  plain="${plain//🦞/XX}"
+  vw=${#plain}
+  rp_count=$(( WIDTH - PAD - vw ))
+
+  printf '%s' "    ${DC}│${R}$(make_spaces $PAD)${styled}$(make_spaces $rp_count)${DC}│${R}"
+  printf '\n'
+}
+
+# ── Output ──────────────────────────────────────────────
+echo
+printf '%s\n' "    ${DC}╭$(printf '─%.0s' $(seq 1 $WIDTH))╮${R}"
+
+for i in "${!entries[@]}"; do
+  render_row "${entries[$i]}" "$i"
 done
 
-printf "${DIM}${CYAN}  │${RESET}%${width}s${DIM}${CYAN}│${RESET}\n" ""
-printf "${DIM}${CYAN}  ╰"
-printf '─%.0s' $(seq 1 $width)
-printf "╯${RESET}\n"
-echo ""
+printf '%s\n' "    ${DC}╰$(printf '─%.0s' $(seq 1 $WIDTH))╯${R}"
+echo
 {% endraw %}
