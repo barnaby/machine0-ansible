@@ -55,8 +55,8 @@
 - name: Install mise
   become: true
   ansible.builtin.apt:
-    name: mise=2026.4.19
-    state: present
+    name: mise
+    state: latest
     update_cache: true
 
 - name: Install runtime tools via mise
