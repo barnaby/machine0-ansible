@@ -55,7 +55,7 @@
 - name: Install mise
   become: true
   ansible.builtin.apt:
-    name: mise=2026.4.3
+    name: mise=2026.4.19
     state: present
     update_cache: true
 
