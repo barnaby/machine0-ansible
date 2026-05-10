@@ -18,7 +18,7 @@
     - role: 03-motd
       vars:
         motd_type: message
-        motd_title: "[ m0 ] Ubuntu {{ ansible_distribution_version }} · OpenClaw 🦞"
+        motd_title: "[ m0 ] Ubuntu {{ ansible_facts['distribution_version'] }} · OpenClaw 🦞"
         motd_body:
           - "# Start onboarding (~60s on first run):"
           - "$ openclaw onboard --install-daemon"

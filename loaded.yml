@@ -15,7 +15,7 @@
     - role: 03-motd
       vars:
         motd_type: message
-        motd_title: "[ m0 ] Ubuntu {{ ansible_distribution_version }} · Loaded"
+        motd_title: "[ m0 ] Ubuntu {{ ansible_facts['distribution_version'] }} · Loaded"
         motd_body:
           - "Built with the loaded playbook, fork to customize:"
           - "-> https://github.com/fdmtl/machine0-ubuntu"
