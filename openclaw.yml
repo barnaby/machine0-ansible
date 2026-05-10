@@ -18,12 +18,13 @@
     - role: 03-motd
       vars:
         motd_type: message
-        motd_message_body: |
-          Welcome to your new OpenClaw VM! Run this command to start the onboarding process:
-
-          $ openclaw onboard --install-daemon
-
-          Note: it'll take ~60s to startup the first time, don't kill the process.
+        motd_title: "[ m0 ] Ubuntu {{ ansible_facts['distribution_version'] }} · OpenClaw 🦞"
+        motd_body:
+          - "# Start onboarding (~60s on first run):"
+          - "$ openclaw onboard --install-daemon"
+          - ""
+          - "Built with the openclaw playbook, fork to customize:"
+          - "-> https://github.com/fdmtl/machine0-ubuntu"
     - role: 06-firewall
       vars:
         firewall_allowed_tcp_ports:

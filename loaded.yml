@@ -13,6 +13,12 @@
     - role: 01-core-packages
     - role: 02-shell
     - role: 03-motd
+      vars:
+        motd_type: message
+        motd_title: "[ m0 ] Ubuntu {{ ansible_facts['distribution_version'] }} · Loaded"
+        motd_body:
+          - "Built with the loaded playbook, fork to customize:"
+          - "-> https://github.com/fdmtl/machine0-ubuntu"
     - role: 06-firewall
       vars:
         firewall_allowed_tcp_ports:
