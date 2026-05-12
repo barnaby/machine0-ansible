@@ -1,0 +1,37 @@
+---
+# =============================================================================
+# Hermes Playbook
+# Run this as the regular user to install packages and configure the system
+# Usage: ansible-playbook -i "IP," -u barnaby playbook.yml
+# =============================================================================
+
+- hosts: all
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - role: 01-core-packages
+    - role: 02-shell
+    - role: 04-claws
+      vars:
+        hermes: true
+    - role: 03-motd
+      vars:
+        motd_type: message
+        motd_title: "[ m0 ] Ubuntu {{ ansible_facts['distribution_version'] }} · Hermes"
+        motd_body:
+          - "# Start setup:"
+          - "$ hermes setup"
+          - ""
+          - "Built with the hermes playbook, fork to customize:"
+          - "-> https://github.com/fdmtl/machine0-ubuntu"
+    - role: 06-firewall
+      vars:
+        firewall_allowed_tcp_ports:
+          - "22"
+
+  post_tasks:
+    - name: Reboot the machine
+      become: true
+      ansible.builtin.reboot:
+        reboot_timeout: 300

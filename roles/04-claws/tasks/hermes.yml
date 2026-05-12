@@ -1,0 +1,38 @@
+---
+- name: Check if Hermes is already installed
+  ansible.builtin.shell: |
+    export PATH="$HOME/.local/bin:$PATH"
+    source ~/.bashrc 2>/dev/null || true
+    command -v hermes >/dev/null 2>&1
+  args:
+    executable: /bin/bash
+  register: hermes_check
+  changed_when: false
+  failed_when: false
+
+- name: Configure needrestart to auto mode
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/needrestart/conf.d/no-prompt.conf
+    content: "$nrconf{restart} = 'a';\n"
+    mode: "0644"
+  when: hermes_check.rc != 0
+
+- name: Install Hermes agent
+  ansible.builtin.shell: |
+    export DEBIAN_FRONTEND=noninteractive
+    curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash -s -- --skip-setup
+  args:
+    executable: /bin/bash
+  register: hermes_install
+  changed_when: hermes_install.rc == 0
+  when: hermes_check.rc != 0
+
+- name: Verify Hermes is installed
+  ansible.builtin.shell: |
+    export PATH="$HOME/.local/bin:$PATH"
+    source ~/.bashrc 2>/dev/null || true
+    command -v hermes
+  args:
+    executable: /bin/bash
+  changed_when: false

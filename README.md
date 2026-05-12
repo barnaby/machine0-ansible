@@ -27,3 +27,4 @@ ansible-playbook -i "localhost," -c local loaded.yml
 |---|---|---|
 | `ubuntu-24-04-loaded` | `loaded.yml` | Modern agents (Claude Code) and dev tools (e.g. Docker, Node, Python...). |
 | `ubuntu-24-04-openclaw` | `openclaw.yml` | Loaded + [OpenClaw](https://github.com/openclawai/OpenClaw). |
+| `ubuntu-24-04-hermes` | `hermes.yml` | Loaded + [Hermes](https://hermes-agent.nousresearch.com). |
