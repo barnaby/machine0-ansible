@@ -18,3 +18,7 @@
 - name: Install ZeroClaw
   import_tasks: zeroclaw.yml
   when: zero_claw
+
+- name: Install Hermes
+  import_tasks: hermes.yml
+  when: hermes
